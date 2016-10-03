@@ -34,12 +34,13 @@ def do():
     INFO = {'header': asd.copy()}
     INFO['header']['encryptPIP'] = int(random.random() * 65025)
     PARAM = PARAMS[i%len(PARAMS)]
-    print(OpenThings.param_info[PARAM])
+    #print(OpenThings.param_info[PARAM])
     INFO["recs"] = [{
 "wr":      False,
-"paramid": PARAM,
+"paramid": 0xA3,
             "typeid":  OpenThings.Value.UINT,
-            "length":  0, # FILL IN
+            "length":  1, # FILL IN
+            "value": 0,
     }]
     fsk_interface.send(INFO)
     radio.receiver(fsk=True)
@@ -53,6 +54,9 @@ def incoming(address, message):
         if i['paramname'] == 'JOIN':
             print('join request')
             ack(address, message)
+        elif i['paramname'] == 'TEMPERATURE':
+            print('temp')
+            do()
 energenie.fsk_router.when_incoming(incoming)
 
 #device = energenie.registry.get('auto_0x3_0x4da')
@@ -78,6 +82,4 @@ energenie.fsk_router.when_incoming(incoming)
 #    energenie.loop(1)
 while True:
     energenie.loop(5)
-    if asd:
-        do()
 energenie.finished()
