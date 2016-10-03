@@ -7,6 +7,7 @@ from energenie.Devices import fsk_interface
 energenie.init()
 energenie.discovery_none()
 asd=None
+i=0
 def ack(address, message):
     global asd
     msg={
@@ -28,17 +29,21 @@ def ack(address, message):
     asd = msg['header'].copy()
 
 def do():
+    global i
+    PARAMS = list(OpenThings.param_info.keys())
     INFO = {'header': asd.copy()}
     INFO['header']['encryptPIP'] = int(random.random() * 65025)
+    PARAM = PARAMS[i%len(PARAMS)]
+    print(OpenThings.param_info[PARAM])
     INFO["recs"] = [{
 "wr":      False,
-"paramid": OpenThings.PARAM_VOLTAGE,
+"paramid": PARAM,
             "typeid":  OpenThings.Value.UINT,
             "length":  0, # FILL IN
     }]
     fsk_interface.send(INFO)
     radio.receiver(fsk=True)
-
+    i+=1
 
 def incoming(address, message):
     if address == (4, 2, 6711):
