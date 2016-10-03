@@ -52,3 +52,53 @@ device_id=2817
 
 
 
+
+ADD auto_0x2_0x1a37
+type=MIHO005
+device_id=6711
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+IGN auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+
+
+ADD auto_0x3_0x4da
+type=MIHO013
+device_id=1242
+

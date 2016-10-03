@@ -52,6 +52,7 @@ class OpenThingsAirInterface():
     def send(self, payload, radio_config=None):
         #   payload is a pydict suitable for OpenThings
         #   radio_params is an overlay on top of radio tx defaults
+        print('Send: {}'.format(payload)) 
         p = OpenThings.encode(payload)
 
         # Set radio defaults, if no override

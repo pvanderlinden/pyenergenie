@@ -165,6 +165,7 @@ def decode(payload, decrypt=True, receive_timestamp=None):
 	"""Decode a raw buffer into an OpenThings pydict"""
 	#Note, decrypt must already have run on this for it to work
 	length = payload[0]
+        print(payload)
 
 	# CHECK LENGTH
 	if length+1 != len(payload) or length < 10:
