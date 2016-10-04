@@ -31,7 +31,7 @@ def ack(address, message):
 def do():
     global i
     print('start', time.time())
-    types=[0x92, OpenThings.Value.UINT, OpenThings.Value.UINT_BP16, OpenThings.Value.SINT_BP16]
+    types=[OpenThings.Value.SINT_BP8]
     PARAMS = list(OpenThings.param_info.keys())
     INFO = {'header': asd.copy()}
     INFO['header']['encryptPIP'] = int(random.random() * 65025)
