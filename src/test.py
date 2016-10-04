@@ -30,6 +30,8 @@ def ack(address, message):
 
 def do():
     global i
+    print('start', time.time())
+    types=[0x92, OpenThings.Value.UINT, OpenThings.Value.UINT_BP16, OpenThings.Value.SINT_BP16]
     PARAMS = list(OpenThings.param_info.keys())
     INFO = {'header': asd.copy()}
     INFO['header']['encryptPIP'] = int(random.random() * 65025)
@@ -37,16 +39,20 @@ def do():
     #print(OpenThings.param_info[PARAM])
     INFO["recs"] = [{
 "wr":      False,
-"paramid": 0xA3,
-            "typeid":  OpenThings.Value.UINT,
-            "length":  1, # FILL IN
-            "value": 0,
+"paramid": 0x74,
+            "typeid":  types[i%len(types)],
+            "length":  0, # FILL IN
+ #           "value": 0,
     }]
+    print('sending', time.time())
     fsk_interface.send(INFO)
+    print('send', time.time())
     radio.receiver(fsk=True)
+    print('la', time.time())
     i+=1
 
 def incoming(address, message):
+    print('in', time.time())
     if address == (4, 2, 6711):
         return
     print("\nIncoming from {}: {}".format(address, message))
@@ -54,9 +60,7 @@ def incoming(address, message):
         if i['paramname'] == 'JOIN':
             print('join request')
             ack(address, message)
-        elif i['paramname'] == 'TEMPERATURE':
-            print('temp')
-            do()
+    do()
 energenie.fsk_router.when_incoming(incoming)
 
 #device = energenie.registry.get('auto_0x3_0x4da')
