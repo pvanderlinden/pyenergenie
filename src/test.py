@@ -31,6 +31,7 @@ def ack(address, message):
 def do():
     global i
     print('start', time.time())
+    values=[0,1]
     types=[OpenThings.Value.SINT_BP8]
     PARAMS = list(OpenThings.param_info.keys())
     INFO = {'header': asd.copy()}
@@ -39,10 +40,10 @@ def do():
     #print(OpenThings.param_info[PARAM])
     INFO["recs"] = [{
 "wr":      False,
-"paramid": 0x74,
-            "typeid":  types[i%len(types)],
-            "length":  0, # FILL IN
- #           "value": 0,
+"paramid": 0xA5,
+            "typeid":  0,
+            "length":  1, # FILL IN
+            "value": 0,
     }]
     print('sending', time.time())
     fsk_interface.send(INFO)
@@ -60,7 +61,9 @@ def incoming(address, message):
         if i['paramname'] == 'JOIN':
             print('join request')
             ack(address, message)
-    do()
+        if i['paramname'] == 'TEMPERATURE':
+            print('temperature')
+            do()
 energenie.fsk_router.when_incoming(incoming)
 
 #device = energenie.registry.get('auto_0x3_0x4da')
