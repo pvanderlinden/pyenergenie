@@ -339,7 +339,7 @@ def encode(spec, encrypt=True):
 
 	# back-patch the length byte so it is correct
 	payload[0] = len(payload)-1
-	print(['0x{!x}'.format(i) for i in payload])
+	print(['0x{:x}'.format(i) for i in payload])
 
 	if encrypt:
 		# ENCRYPT
