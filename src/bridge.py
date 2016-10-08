@@ -15,19 +15,33 @@ import json
 
 import zmq
 
+last_message = {}
+last_freq = {}
 
-def energy_monitor_loop(pull):
+def get_next(address):
+    last_msg = last_message.get(address, None)
+    last_frq = last_freq.get(address, None)
+    if last_msg and last_frq:
+        return last_msg + last_frq
+    return None
+
+
+def energy_monitor_loop(pull, pub):
     global switch_state
 
     # Process any received messages from the real radio
     energenie.loop()
 
     if pull.poll(timeout=1):
-        msg = json.loads(pull.recv().decode('utf-8'))
-
-        device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
-        device.send_message(msg)
-
+        msg_type, msg = pull.recv().decode('utf-8').split(' ', 1)
+        msg = json.loads(msg)
+        if msg_type == 'msg':
+            device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
+            device.send_message(msg)
+        elif msg_type == 'address':
+            address = tuple(msg)
+            next = get_next(address)
+            pub.send('switch_next {}'.format(json.dumps((address, next))).encode('utf-8'))
 
 class AutoJoinSave(Registry.Discovery):
     """A discovery agent that looks for join requests, and auto adds"""
@@ -72,8 +86,6 @@ if __name__ == "__main__":
     pull = context.socket(zmq.PULL)
     pull.bind('tcp://127.0.0.1:12348')
 
-    # provide a default incoming message handler, useful for logging every message
-    last_message = {}
     def incoming(address, message):
         pub.send('{} {}'.format(
                  'switch_data', json.dumps(message.pydict)).encode('utf-8'))
@@ -81,6 +93,7 @@ if __name__ == "__main__":
         last = last_message.get(address, None)
         if last:
             freq = 'previous: %ss ago' % (now - last)
+            last_freq[address] = now - list
         else:
             freq = 'first message'
         last_message[address] = now
@@ -89,7 +102,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            energy_monitor_loop(pull)
+            energy_monitor_loop(pull, pub)
     finally:
         energenie.finished()
 

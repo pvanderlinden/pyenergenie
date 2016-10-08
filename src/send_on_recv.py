@@ -38,7 +38,7 @@ SWITCH_MESSAGE = {
 
 to_send = [
     IDENTIFY_REQ,
-#    SWITCH_MESSAGE,
+    SWITCH_MESSAGE,
 ]
 
 def dct_to_address(dct):
@@ -65,5 +65,5 @@ while True:
     msg = json.loads(msg)
     address = dct_to_address(msg)
     if address in by_address:
-        push.send(json.dumps(by_address[address]).encode('utf=8'))
+        push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
         print(time.time(), msg)
