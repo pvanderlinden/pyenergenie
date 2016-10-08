@@ -73,6 +73,23 @@ SET_VALVE_STATE = {
     ]
 }
 
+GET_DIAGNOSTICS = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x26,
+            "typeid":  OpenThings.Value.UINT,
+            "length": 0,
+        }
+    ]
+}
+
 # Test program with easy device:
 
 SWITCH_MESSAGE = {
@@ -104,7 +121,7 @@ def combine(*msgs):
 
 
 to_send = [
-    combine(SET_VALVE_STATE),
+    combine(GET_DIAGNOSTICS),
 #    SWITCH_MESSAGE,
 ]
 
