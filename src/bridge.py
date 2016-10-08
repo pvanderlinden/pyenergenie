@@ -37,6 +37,7 @@ def energy_monitor_loop(pull, pub):
         msg = json.loads(msg)
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
+            print('sending', time.time())
             device.send_message(msg)
             print('send', time.time())
         elif msg_type == 'address':

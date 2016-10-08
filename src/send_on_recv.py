@@ -32,7 +32,7 @@ SET_REPORTING_INTERVAL = {
             "wr":      True,
             "paramid": 0x52,
             "typeid":  OpenThings.Value.UINT,
-            "value":  300,
+            "value":  240,
         }
     ]
 }
