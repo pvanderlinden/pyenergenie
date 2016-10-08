@@ -1,3 +1,4 @@
 *.pyc
 .idea/
 energenie.csv
+energenie/registry.kvs
