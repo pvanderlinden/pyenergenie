@@ -11,15 +11,22 @@ from energenie import Registry
 from energenie import OpenThings
 
 import time
+import json
+
+import zmq
 
 
-def energy_monitor_loop():
+def energy_monitor_loop(pull):
     global switch_state
 
     # Process any received messages from the real radio
     energenie.loop()
 
-    time.sleep(1)
+    if pull.poll(timeout=1):
+        msg = json.loads(pull.recv().decode('utf-8'))
+
+        device = energenie.registry.get('auto_{:x}_{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
+        device.send_message(msg)
 
 
 class AutoJoinSave(Registry.Discovery):
@@ -59,14 +66,29 @@ if __name__ == "__main__":
         pass
     energenie.registry.load_into(Dummy())
 
+    context = zmq.Context()
+    pub = context.socket(zmq.PUB)
+    pub.bind('tcp://127.0.0.1:12347')
+    pull = context.socket(zmq.PULL)
+    pull.bind('tcp://127.0.0.1:12348')
+
     # provide a default incoming message handler, useful for logging every message
+    last_message = {}
     def incoming(address, message):
-        print("\nIncoming from %s" % str(address))
+        pub.send('{} {}'.format(
+                 'switch_data', json.dumps(message)).encode('utf-8'))
+        now = time.time()
+        last = last_message.get('address', None)
+        if last:
+            freq = 'previous: %ss ago' % (now - last)
+        else:
+            freq = 'first message'
+        print("\nIncoming from %s, %s: %s" % (str(address), freq, message))
     energenie.fsk_router.when_incoming(incoming)
 
     try:
         while True:
-            energy_monitor_loop()
+            energy_monitor_loop(pull)
     finally:
         energenie.finished()
 
