@@ -22,7 +22,7 @@ def energy_monitor_loop():
     time.sleep(1)
 
 
-class JoinAutoDiscovery(Registry.Registry.Discovery):
+class JoinAutoDiscovery(Registry.Discovery):
     """A discovery agent that looks for join requests, and auto adds"""
     def __init__(self, registry, router):
         super().__init__(registry, router)
