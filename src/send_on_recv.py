@@ -77,8 +77,17 @@ SWITCH_MESSAGE = {
 
 #####
 
+def combine(*msgs):
+    combined = {'header': msgs[0]['header'], 'recs': []}
+    for msg in msgs:
+        assert msg['header'] == combined['header']
+        combined['recs'].extend(msg['recs'])
+    import pprint;pprint.pprint(combined)
+    return combined
+
+
 to_send = [
-    [SET_REPORTING_INTERVAL, GET_BATTERY_VOLTAGE],
+    combine(SET_REPORTING_INTERVAL, GET_BATTERY_VOLTAGE),
 #    SWITCH_MESSAGE,
 ]
 
@@ -99,7 +108,7 @@ sub.setsockopt(zmq.SUBSCRIBE, b'')
 push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
-by_address = {dct_to_address(msg[0]): msg for msg in to_send}
+by_address = {dct_to_address(msg): msg for msg in to_send}
 for address in by_address:
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
 while True:
