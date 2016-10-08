@@ -79,6 +79,7 @@ class OpenThingsAirInterface():
         radio.transmit(p, outer_times=outer_times, inner_times=inner_times, outer_delay=outer_delay)
         if encoded:
             payload = OpenThings.decode(p)
+        radio.receiver(fsk=True)
         print(time.time(), 'Send: {}'.format(payload))
         # radio auto-returns to previous state after transmit completes
 
