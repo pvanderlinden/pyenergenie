@@ -82,7 +82,6 @@ def combine(*msgs):
     for msg in msgs:
         assert msg['header'] == combined['header']
         combined['recs'].extend(msg['recs'])
-    import pprint;pprint.pprint(combined)
     return combined
 
 
@@ -118,8 +117,7 @@ while True:
     if msg_type == 'switch_data':
         address = dct_to_address(msg)
         if address in by_address:
-            for send_msg in by_address[address]:
-                push.send('msg %s' % json.dumps(send_msg).encode('utf-8'))
+            push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
             print(datetime.datetime.now(), msg)
     elif msg_type == 'switch_next':
         address = tuple(msg[0])
