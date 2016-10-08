@@ -1,4 +1,4 @@
 *.pyc
 .idea/
 energenie.csv
-energenie/registry.kvs
+src/registry.kvs
