@@ -1,5 +1,7 @@
+from __future__ import print_function
 from energenie import OpenThings
 from energenie import Devices
+import datetime
 
 IDENTIFY_REQ = {
     "header": {
@@ -38,7 +40,7 @@ SWITCH_MESSAGE = {
 
 to_send = [
     IDENTIFY_REQ,
-    SWITCH_MESSAGE,
+#    SWITCH_MESSAGE,
 ]
 
 def dct_to_address(dct):
@@ -59,11 +61,22 @@ push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
 by_address = {dct_to_address(msg): msg for msg in to_send}
+for address in by_address:
+    push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
 while True:
     msg = sub.recv().decode('utf-8')
     msg_type, msg = msg.split(' ', 1)
     msg = json.loads(msg)
-    address = dct_to_address(msg)
-    if address in by_address:
-        push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
-        print(time.time(), msg)
+    if msg_type == 'switch_data':
+        address = dct_to_address(msg)
+        if address in by_address:
+            push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
+        print(datetime.datetime.now(), msg)
+    elif msg_type == 'switch_next':
+        address = tuple(msg[0])
+        if address not in by_address:
+            continue
+        next = msg[1]
+        if next:
+            next = datetime.datetime.fromtimestamp(next)
+        print(address, next)
