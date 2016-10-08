@@ -441,6 +441,9 @@ class MiHomeDevice(EnergenieDevice):
             "device_id":       self.device_id
         }
 
+    def schedule(self, msg):
+        self._scheduled = msg
+
     def __repr__(self):
         return "MiHomeDevice(%s,%s,%s)" % (str(self.manufacturer_id), str(self.product_id), str(self.device_id))
 

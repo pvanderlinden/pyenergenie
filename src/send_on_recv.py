@@ -108,8 +108,9 @@ push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
 by_address = {dct_to_address(msg): msg for msg in to_send}
-for address in by_address:
+for address, msg in by_address.items():
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
+    push.send('msg %s' % json.dumps(msg).encode('utf-8'))
 while True:
     msg = sub.recv().decode('utf-8')
     msg_type, msg = msg.split(' ', 1)

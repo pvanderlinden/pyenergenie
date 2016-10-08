@@ -25,6 +25,9 @@ def get_next(address):
         return last_msg + last_frq
     return None
 
+schedule = {}
+def dct_to_address(dct):
+    return (dct['header']['mfrid'], dct['header']['productid'], dct['header']['sensorid'])
 
 def energy_monitor_loop(pull, pub):
     global switch_state
@@ -37,9 +40,7 @@ def energy_monitor_loop(pull, pub):
         msg = json.loads(msg)
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
-            print('sending', time.time())
-            device.send_message(msg)
-            print('send', time.time())
+            schedule[dct_to_address(msg)] = (device, msg)
         elif msg_type == 'address':
             address = tuple(msg)
             next = get_next(address)
@@ -89,6 +90,9 @@ if __name__ == "__main__":
     pull.bind('tcp://127.0.0.1:12348')
 
     def incoming(address, message):
+        out_msg = schedule.get(address, None)
+        if out_msg:
+            out_msg[0].send_message(out_msg[1])
         pub.send('{} {}'.format(
                  'switch_data', json.dumps(message.pydict)).encode('utf-8'))
         now = time.time()
