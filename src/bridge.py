@@ -40,7 +40,7 @@ def energy_monitor_loop(pull, pub):
         try:
             msg_type, msg = msg.split(' ', 1)
         except:
-            print(msg)
+            print('error', msg)
         msg = json.loads(msg)
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     def incoming(address, message):
         now = time.time()
-        out_msg = schedule.get(address, None)
+        out_msg = schedule.pop(address, None)
         if out_msg:
             out_msg[0].send_message(out_msg[1], encoded=True)
         pub.send('{} {}'.format(
