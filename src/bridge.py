@@ -25,7 +25,7 @@ def energy_monitor_loop():
 class AutoJoinSave(Registry.Discovery):
     """A discovery agent that looks for join requests, and auto adds"""
     def __init__(self, registry, router):
-        super().__init__(registry, router)
+        super(AutoJoinSave, self).__init__(registry, router)
 
     def unknown_device(self, address, message):
         ##print("unknown device auto join %s" % str(address))
@@ -38,7 +38,7 @@ class AutoJoinSave(Registry.Discovery):
             j = None
 
         if j == None: # not a join
-            super().unknown_device(address, message)
+            super(AutoJoinSave, self).unknown_device(address, message)
         else: # it is a join
             # but don't forward the join request as it will be malformed with no value
             ci = self.accept_device(address, message, forward=False)
