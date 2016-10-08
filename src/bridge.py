@@ -38,6 +38,7 @@ def energy_monitor_loop(pull, pub):
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
             device.send_message(msg)
+            print('send', time.time())
         elif msg_type == 'address':
             address = tuple(msg)
             next = get_next(address)
@@ -97,7 +98,7 @@ if __name__ == "__main__":
         else:
             freq = 'first message'
         last_message[address] = now
-        print("\nIncoming from %s, %s: %s" % (str(address), freq, message))
+        print("\n%s Incoming from %s, %s: %s" % (time.time(), str(address), freq, message))
         next = get_next(address)
         pub.send('switch_next {}'.format(json.dumps((address, next))).encode('utf-8'))
     energenie.fsk_router.when_incoming(incoming)

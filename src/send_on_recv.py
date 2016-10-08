@@ -32,11 +32,28 @@ SET_REPORTING_INTERVAL = {
             "wr":      True,
             "paramid": 0x52,
             "typeid":  OpenThings.Value.UINT,
-            "value":  6 * 60,
+            "value":  300,
         }
     ]
 }
 
+
+GET_BATTERY_VOLTAGE = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x62,
+            "typeid":  OpenThings.Value.UINT,
+            "length": 0,
+        }
+    ]
+}
 
 # Test program with easy device:
 
@@ -61,7 +78,7 @@ SWITCH_MESSAGE = {
 #####
 
 to_send = [
-    SET_REPORTING_INTERVAL,
+    [SET_REPORTING_INTERVAL, GET_BATTERY_VOLTAGE],
 #    SWITCH_MESSAGE,
 ]
 
@@ -82,7 +99,7 @@ sub.setsockopt(zmq.SUBSCRIBE, b'')
 push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
-by_address = {dct_to_address(msg): msg for msg in to_send}
+by_address = {dct_to_address(msg[0]): msg for msg in to_send}
 for address in by_address:
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
 while True:
@@ -92,7 +109,8 @@ while True:
     if msg_type == 'switch_data':
         address = dct_to_address(msg)
         if address in by_address:
-            push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
+            for send_msg in by_address[address]:
+                push.send('msg %s' % json.dumps(send_msg).encode('utf-8'))
             print(datetime.datetime.now(), msg)
     elif msg_type == 'switch_next':
         address = tuple(msg[0])
