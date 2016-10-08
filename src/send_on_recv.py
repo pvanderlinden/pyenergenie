@@ -1,5 +1,25 @@
+from energenie import OpenThings
 
-# message = {}
+
+IDENTIFY_REQ = {
+    "header": {
+        "mfrid":       4, # FILL IN
+        "productid":   3, # FILL IN
+        "encryptPIP":  1234,
+        "sensorid":    1242 # FILL IN
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x3F,
+            "typeid":  OpenThings.Value.UINT,
+            "length":  0
+        }
+    ]
+}
+to_send = IDENTIFY_REQ
+address = IDENTIFY_REQ['header'].copy()
+address.pop('encryptPIP')
 #
 # HRF_send_FSK_msg(HRF_make_FSK_msg(manufacturerId, encryptId, productId, sensorId,
 #                                   4, 0xD2, 0x02, 0x03, 0x84), encryptId);
@@ -18,4 +38,7 @@ while True:
     msg = sub.recv().decode('utf-8')
     msg_type, msg = msg.split(' ', 1)
     msg = json.loads(msg)
-    print(msg)
+    msg['header'].pop('encryptPIP', None)
+    if msg['header'] == address:
+        push.send(json.dumps(to_send).encode('utf=8'))
+        print(msg)
