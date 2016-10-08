@@ -71,7 +71,7 @@ while True:
         address = dct_to_address(msg)
         if address in by_address:
             push.send('msg %s' % json.dumps(by_address[address]).encode('utf-8'))
-        print(datetime.datetime.now(), msg)
+            print(datetime.datetime.now(), msg)
     elif msg_type == 'switch_next':
         address = tuple(msg[0])
         if address not in by_address:
