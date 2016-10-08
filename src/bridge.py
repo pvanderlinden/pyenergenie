@@ -36,7 +36,11 @@ def energy_monitor_loop(pull, pub):
     energenie.loop()
 
     if pull.poll(timeout=1):
-        msg_type, msg = pull.recv().decode('utf-8').split(' ', 1)
+        msg = pull.recv().decode('utf-8')
+        try:
+            msg_type, msg = msg.split(' ', 1)
+        except:
+            print(msg)
         msg = json.loads(msg)
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))

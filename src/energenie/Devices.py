@@ -483,7 +483,7 @@ class MiHomeDevice(EnergenieDevice):
         if self.air_interface != None:
             #TODO: might want to send the config, either as a send parameter,
             #or by calling air_interface.configure() first?
-            self.air_interface.send(payload, encoded=False, radio_config=self.radio_config)
+            self.air_interface.send(payload, encoded=encoded, radio_config=self.radio_config)
         else:
             m = self.manufacturer_id
             p = self.product_id
