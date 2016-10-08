@@ -406,9 +406,9 @@ class LegacyDevice(EnergenieDevice):
         }
 
 
-    def send_message(self, payload, encoded=False):
+    def send_message(self, payload):
         if self.air_interface != None:
-            self.air_interface.send(payload, radio_config=self.radio_config, encoded=encoded)
+            self.air_interface.send(payload, radio_config=self.radio_config)
         else:
             d = self.device_id
             print("send_message(mock[%s]):%s" % (str(d), payload))
@@ -471,7 +471,7 @@ class MiHomeDevice(EnergenieDevice):
     ##def handle_message(self, payload):
     #override for any specific handling
 
-    def send_message(self, payload):
+    def send_message(self, payload, encoded=False):
         #TODO: interface with air_interface
         #is payload a pydict with header at this point, and we have to call OpenThings.encode?
         #should the encode be done here, or in the air_interface adaptor?
@@ -483,7 +483,7 @@ class MiHomeDevice(EnergenieDevice):
         if self.air_interface != None:
             #TODO: might want to send the config, either as a send parameter,
             #or by calling air_interface.configure() first?
-            self.air_interface.send(payload)
+            self.air_interface.send(payload, encoded=False, radio_config=self.radio_config)
         else:
             m = self.manufacturer_id
             p = self.product_id
