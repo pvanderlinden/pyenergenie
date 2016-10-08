@@ -86,7 +86,7 @@ def combine(*msgs):
 
 
 to_send = [
-    combine(SET_REPORTING_INTERVAL, GET_BATTERY_VOLTAGE),
+    combine(GET_BATTERY_VOLTAGE),
 #    SWITCH_MESSAGE,
 ]
 
