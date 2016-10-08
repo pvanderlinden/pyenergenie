@@ -32,7 +32,7 @@ SET_REPORTING_INTERVAL = {
             "wr":      True,
             "paramid": 0x52,
             "typeid":  OpenThings.Value.UINT,
-            "value":  240,
+            "value":  300,
         }
     ]
 }
@@ -51,6 +51,24 @@ GET_BATTERY_VOLTAGE = {
             "paramid": 0x62,
             "typeid":  OpenThings.Value.UINT,
             "length": 0,
+        }
+    ]
+}
+
+SET_VALVE_STATE = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x25,
+            "typeid":  OpenThings.Value.UINT,
+            "value": 0,
+            "length": 1,
         }
     ]
 }
@@ -86,7 +104,7 @@ def combine(*msgs):
 
 
 to_send = [
-    combine(GET_BATTERY_VOLTAGE),
+    combine(SET_VALVE_STATE),
 #    SWITCH_MESSAGE,
 ]
 
