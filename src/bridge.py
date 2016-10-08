@@ -40,7 +40,7 @@ def energy_monitor_loop(pull, pub):
         msg = json.loads(msg)
         if msg_type == 'msg':
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
-            schedule[dct_to_address(msg)] = (device, msg)
+            schedule[dct_to_address(msg)] = (device, OpenThings.encode(msg))
         elif msg_type == 'address':
             address = tuple(msg)
             next = get_next(address)
@@ -90,12 +90,12 @@ if __name__ == "__main__":
     pull.bind('tcp://127.0.0.1:12348')
 
     def incoming(address, message):
+        now = time.time()
         out_msg = schedule.get(address, None)
         if out_msg:
-            out_msg[0].send_message(out_msg[1])
+            out_msg[0].send_message(out_msg[1], encoded=True)
         pub.send('{} {}'.format(
                  'switch_data', json.dumps(message.pydict)).encode('utf-8'))
-        now = time.time()
         last = last_message.get(address, None)
         if last:
             freq = 'previous: %ss ago' % (now - last)

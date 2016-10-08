@@ -406,9 +406,9 @@ class LegacyDevice(EnergenieDevice):
         }
 
 
-    def send_message(self, payload):
+    def send_message(self, payload, encoded=False):
         if self.air_interface != None:
-            self.air_interface.send(payload, radio_config=self.radio_config)
+            self.air_interface.send(payload, radio_config=self.radio_config, encoded=encoded)
         else:
             d = self.device_id
             print("send_message(mock[%s]):%s" % (str(d), payload))
