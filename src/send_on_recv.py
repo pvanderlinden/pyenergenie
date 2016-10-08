@@ -3,7 +3,24 @@ from energenie import OpenThings
 from energenie import Devices
 import datetime
 
-IDENTIFY_REQ = {
+# IDENTIFY_REQ = {
+#     "header": {
+#         "mfrid":       Devices.MFRID,
+#         "productid":   Devices.PRODUCTID_MIHO013,
+#         "encryptPIP":  Devices.CRYPT_PIP,
+#         "sensorid":    1242
+#     },
+#     "recs": [
+#         {
+#             "wr":      True,
+#             "paramid": 0x3F,
+#             "typeid":  OpenThings.Value.UINT,
+#             "length":  0
+#         }
+#     ]
+# }
+
+SET_REPORTING_INTERVAL = {
     "header": {
         "mfrid":       Devices.MFRID,
         "productid":   Devices.PRODUCTID_MIHO013,
@@ -13,12 +30,15 @@ IDENTIFY_REQ = {
     "recs": [
         {
             "wr":      True,
-            "paramid": 0x3F,
+            "paramid": 0x52,
             "typeid":  OpenThings.Value.UINT,
-            "length":  0
+            "value":  6 * 60,
         }
     ]
 }
+
+
+# Test program with easy device:
 
 SWITCH_MESSAGE = {
     "header": {
@@ -38,8 +58,10 @@ SWITCH_MESSAGE = {
     ]
 }
 
+#####
+
 to_send = [
-    IDENTIFY_REQ,
+    SET_REPORTING_INTERVAL,
 #    SWITCH_MESSAGE,
 ]
 
