@@ -25,7 +25,7 @@ def energy_monitor_loop(pull):
     if pull.poll(timeout=1):
         msg = json.loads(pull.recv().decode('utf-8'))
 
-        device = energenie.registry.get('auto_{:x}_{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
+        device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
         device.send_message(msg)
 
 

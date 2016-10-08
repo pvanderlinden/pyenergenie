@@ -1,12 +1,12 @@
 from energenie import OpenThings
-
+from energenie import Devices
 
 IDENTIFY_REQ = {
     "header": {
-        "mfrid":       4, # FILL IN
-        "productid":   3, # FILL IN
-        "encryptPIP":  1234,
-        "sensorid":    1242 # FILL IN
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
     },
     "recs": [
         {
@@ -17,15 +17,39 @@ IDENTIFY_REQ = {
         }
     ]
 }
-to_send = IDENTIFY_REQ
-address = IDENTIFY_REQ['header'].copy()
-address.pop('encryptPIP')
+
+SWITCH_MESSAGE = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO005,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    6711,
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": OpenThings.PARAM_SWITCH_STATE,
+            "typeid":  OpenThings.Value.UINT,
+            "length":  1,
+            "value":  0 
+        }
+    ]
+}
+
+to_send = [
+    IDENTIFY_REQ,
+#    SWITCH_MESSAGE,
+]
+
+def dct_to_address(dct):
+    return (dct['header']['mfrid'], dct['header']['productid'], dct['header']['sensorid'])
 #
 # HRF_send_FSK_msg(HRF_make_FSK_msg(manufacturerId, encryptId, productId, sensorId,
 #                                   4, 0xD2, 0x02, 0x03, 0x84), encryptId);
 
 import zmq
 import json
+import time
 
 context = zmq.Context()
 sub = context.socket(zmq.SUB)
@@ -34,11 +58,12 @@ sub.setsockopt(zmq.SUBSCRIBE, b'')
 push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
+by_address = {dct_to_address(msg): msg for msg in to_send}
 while True:
     msg = sub.recv().decode('utf-8')
     msg_type, msg = msg.split(' ', 1)
     msg = json.loads(msg)
-    msg['header'].pop('encryptPIP', None)
-    if msg['header'] == address:
-        push.send(json.dumps(to_send).encode('utf=8'))
-        print(msg)
+    address = dct_to_address(msg)
+    if address in by_address:
+        push.send(json.dumps(by_address[address]).encode('utf=8'))
+        print(time.time(), msg)
