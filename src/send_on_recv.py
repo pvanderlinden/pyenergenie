@@ -67,7 +67,7 @@ SET_VALVE_STATE = {
             "wr":      True,
             "paramid": 0x25,
             "typeid":  OpenThings.Value.UINT,
-            "value": 0,
+            "value": 2,
             "length": 1,
         }
     ]
@@ -90,6 +90,23 @@ GET_DIAGNOSTICS = {
     ]
 }
 
+SET_TARGET_TEMPERATURE = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x74,
+            "typeid":  0x90,
+            "value": 20.5,
+        }
+    ]
+}
+
 # Test program with easy device:
 
 SWITCH_MESSAGE = {
@@ -105,7 +122,7 @@ SWITCH_MESSAGE = {
             "paramid": OpenThings.PARAM_SWITCH_STATE,
             "typeid":  OpenThings.Value.UINT,
             "length":  1,
-            "value":  0 
+            "value":  1 
         }
     ]
 }
@@ -121,7 +138,7 @@ def combine(*msgs):
 
 
 to_send = [
-    combine(GET_DIAGNOSTICS),
+    SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#GET_BATTERY_VOLTAGE,
 #    SWITCH_MESSAGE,
 ]
 
