@@ -76,13 +76,14 @@ if __name__ == "__main__":
     last_message = {}
     def incoming(address, message):
         pub.send('{} {}'.format(
-                 'switch_data', json.dumps(message)).encode('utf-8'))
+                 'switch_data', json.dumps(message.pydict)).encode('utf-8'))
         now = time.time()
-        last = last_message.get('address', None)
+        last = last_message.get(address, None)
         if last:
             freq = 'previous: %ss ago' % (now - last)
         else:
             freq = 'first message'
+        last_message[address] = now
         print("\nIncoming from %s, %s: %s" % (str(address), freq, message))
     energenie.fsk_router.when_incoming(incoming)
 
