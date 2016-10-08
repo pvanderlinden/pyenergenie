@@ -3,22 +3,39 @@ from energenie import OpenThings
 from energenie import Devices
 import datetime
 
-# IDENTIFY_REQ = {
-#     "header": {
-#         "mfrid":       Devices.MFRID,
-#         "productid":   Devices.PRODUCTID_MIHO013,
-#         "encryptPIP":  Devices.CRYPT_PIP,
-#         "sensorid":    1242
-#     },
-#     "recs": [
-#         {
-#             "wr":      True,
-#             "paramid": 0x3F,
-#             "typeid":  OpenThings.Value.UINT,
-#             "length":  0
-#         }
-#     ]
-# }
+IDENTIFY_REQ = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x3F,
+            "typeid":  OpenThings.Value.UINT,
+            "length":  0
+        }
+    ]
+}
+
+EXERCISE_COMMAND = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x23,
+            "typeid":  OpenThings.Value.UINT,
+            "length":  0
+        }
+    ]
+}
 
 SET_REPORTING_INTERVAL = {
     "header": {
@@ -138,7 +155,7 @@ def combine(*msgs):
 
 
 to_send = [
-    SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#GET_BATTERY_VOLTAGE,
+    IDENTIFY_REQ,
 #    SWITCH_MESSAGE,
 ]
 
