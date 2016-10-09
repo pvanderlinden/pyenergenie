@@ -119,10 +119,63 @@ SET_TARGET_TEMPERATURE = {
             "wr":      True,
             "paramid": 0x74,
             "typeid":  0x90,
-            "value": 20.5,
+            "value": 21.0,
         }
     ]
 }
+
+SET_ROOM_TEMP = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      False,
+            "paramid": 0x74,
+            "typeid":  0x90,
+            "value": 16.0,
+        }
+    ]
+}
+# TODO: how?
+CLEAR_ROOM_TEMP = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      False,
+            "paramid": 0x74,
+            "typeid":  OpenThings.Value.UINT,
+            "length": 0,
+        }
+    ]
+}
+
+SET_LOW_POWER_LEVEL = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+        {
+            "wr":      True,
+            "paramid": 0x24,
+            "typeid":  OpenThings.Value.UINT,
+            "value": 0,
+            "length": 1,
+        }
+    ]
+}
+
 
 # Test program with easy device:
 
@@ -139,7 +192,7 @@ SWITCH_MESSAGE = {
             "paramid": OpenThings.PARAM_SWITCH_STATE,
             "typeid":  OpenThings.Value.UINT,
             "length":  1,
-            "value":  0 
+            "value":   0,
         }
     ]
 }
@@ -172,7 +225,7 @@ def combine(*msgs):
 
 
 to_send = [
-    GET_BATTERY_VOLTAGE,# GET_DIAGNOSTICS),#SET_VALVE_STATE,#IDENTIFY_REQ,
+    CLEAR_ROOM_TEMP,#GET_BATTERY_VOLTAGE,# SET_TARGET_TEMPERATURE,#SET_ROOM_TEMP,#SET_VALVE_STATE,#SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#IDENTIFY_REQ,
     #SWITCH_MESSAGE,
 ]
 
@@ -204,7 +257,6 @@ class cycledict(dict):
         self._cycles[name]+=1
         return result 
 by_address = {dct_to_address(msg): msg for msg in to_send}
-print('asd' in by_address)
 for address in by_address.keys():
     msg = by_address[address]
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
