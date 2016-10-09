@@ -49,7 +49,7 @@ SET_REPORTING_INTERVAL = {
             "wr":      True,
             "paramid": 0x52,
             "typeid":  OpenThings.Value.UINT,
-            "value":  300,
+            "value":  240,
         }
     ]
 }
@@ -84,7 +84,7 @@ SET_VALVE_STATE = {
             "wr":      True,
             "paramid": 0x25,
             "typeid":  OpenThings.Value.UINT,
-            "value": 2,
+            "value": 0,
             "length": 1,
         }
     ]
@@ -139,7 +139,24 @@ SWITCH_MESSAGE = {
             "paramid": OpenThings.PARAM_SWITCH_STATE,
             "typeid":  OpenThings.Value.UINT,
             "length":  1,
-            "value":  1 
+            "value":  0 
+        }
+    ]
+}
+
+JOIN_ACK = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242,
+    },
+    "recs": [
+        {
+            "wr":      False,
+            "paramid": OpenThings.PARAM_JOIN,
+            "typeid":  OpenThings.Value.UINT,
+            "length":  0,
         }
     ]
 }
@@ -155,8 +172,8 @@ def combine(*msgs):
 
 
 to_send = [
-    IDENTIFY_REQ,
-#    SWITCH_MESSAGE,
+    GET_BATTERY_VOLTAGE,# GET_DIAGNOSTICS),#SET_VALVE_STATE,#IDENTIFY_REQ,
+    #SWITCH_MESSAGE,
 ]
 
 def dct_to_address(dct):
@@ -176,8 +193,20 @@ sub.setsockopt(zmq.SUBSCRIBE, b'')
 push = context.socket(zmq.PUSH)
 push.connect('tcp://127.0.0.1:12348')
 
+from collections import defaultdict
+class cycledict(dict):
+
+    def __getitem__(self, name):
+        if not hasattr(self, '_cycles'):
+            self._cycles = defaultdict(lambda: 0)
+        item =  dict.__getitem__(self, name)
+        result = item[self._cycles[name]%len(item)]
+        self._cycles[name]+=1
+        return result 
 by_address = {dct_to_address(msg): msg for msg in to_send}
-for address, msg in by_address.items():
+print('asd' in by_address)
+for address in by_address.keys():
+    msg = by_address[address]
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))
     push.send('msg %s' % json.dumps(msg).encode('utf-8'))
 while True:
