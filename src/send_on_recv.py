@@ -124,6 +124,7 @@ SET_TARGET_TEMPERATURE = {
     ]
 }
 
+# Will be cleared if not send for 2 hours, and internal measurement will be used
 SET_ROOM_TEMP = {
     "header": {
         "mfrid":       Devices.MFRID,
@@ -137,23 +138,6 @@ SET_ROOM_TEMP = {
             "paramid": 0x74,
             "typeid":  0x90,
             "value": 16.0,
-        }
-    ]
-}
-# TODO: how?
-CLEAR_ROOM_TEMP = {
-    "header": {
-        "mfrid":       Devices.MFRID,
-        "productid":   Devices.PRODUCTID_MIHO013,
-        "encryptPIP":  Devices.CRYPT_PIP,
-        "sensorid":    1242
-    },
-    "recs": [
-        {
-            "wr":      False,
-            "paramid": 0x74,
-            "typeid":  OpenThings.Value.UINT,
-            "length": 0,
         }
     ]
 }
@@ -175,6 +159,18 @@ SET_LOW_POWER_LEVEL = {
         }
     ]
 }
+
+SEND_NIL = {
+    "header": {
+        "mfrid":       Devices.MFRID,
+        "productid":   Devices.PRODUCTID_MIHO013,
+        "encryptPIP":  Devices.CRYPT_PIP,
+        "sensorid":    1242
+    },
+    "recs": [
+    ]
+}
+
 
 
 # Test program with easy device:
@@ -257,6 +253,7 @@ class cycledict(dict):
         self._cycles[name]+=1
         return result 
 by_address = {dct_to_address(msg): msg for msg in to_send}
+#push.send('now %s' % json.dumps(GET_BATTERY_VOLTAGE).encode('utf-8'))
 for address in by_address.keys():
     msg = by_address[address]
     push.send('address {}'.format(json.dumps(address)).encode('utf-8'))

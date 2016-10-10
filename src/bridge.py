@@ -43,9 +43,12 @@ def energy_monitor_loop(pull, pub):
             print('error', msg)
             return
         msg = json.loads(msg)
-        if msg_type == 'msg':
+        if msg_type in ('msg', 'now'):
             device = energenie.registry.get('auto_0x{:x}_0x{:x}'.format(msg['header']['productid'], msg['header']['sensorid']))
-            schedule[dct_to_address(msg)] = (device, OpenThings.encode(msg))
+            if msg_type == 'now':
+                device.send_message(msg)
+            else:
+                schedule[dct_to_address(msg)] = (device, OpenThings.encode(msg))
         elif msg_type == 'address':
             address = tuple(msg)
             next = get_next(address)
