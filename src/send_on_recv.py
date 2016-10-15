@@ -84,7 +84,7 @@ SET_VALVE_STATE = {
             "wr":      True,
             "paramid": 0x25,
             "typeid":  OpenThings.Value.UINT,
-            "value": 0,
+            "value": 0, # 0 = open, 1 = closed, 2 = auto
             "length": 1,
         }
     ]
@@ -221,8 +221,8 @@ def combine(*msgs):
 
 
 to_send = [
-    CLEAR_ROOM_TEMP,#GET_BATTERY_VOLTAGE,# SET_TARGET_TEMPERATURE,#SET_ROOM_TEMP,#SET_VALVE_STATE,#SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#IDENTIFY_REQ,
-    #SWITCH_MESSAGE,
+    SET_VALVE_STATE,#CLEAR_ROOM_TEMP,#GET_BATTERY_VOLTAGE,# SET_TARGET_TEMPERATURE,#SET_ROOM_TEMP,#SET_VALVE_STATE,#SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#IDENTIFY_REQ,
+#    SWITCH_MESSAGE,
 ]
 
 def dct_to_address(dct):
