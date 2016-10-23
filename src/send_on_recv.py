@@ -219,7 +219,8 @@ def combine(*msgs):
         combined['recs'].extend(msg['recs'])
     return combined
 
-
+SET_VALVE_STATE['recs'][0]['value'] = 0 # 0 = open, 1 = closed, 2 = auto
+SWITCH_MESSAGE['recs'][0]['value'] = 0 
 to_send = [
     SET_VALVE_STATE,#CLEAR_ROOM_TEMP,#GET_BATTERY_VOLTAGE,# SET_TARGET_TEMPERATURE,#SET_ROOM_TEMP,#SET_VALVE_STATE,#SET_TARGET_TEMPERATURE,#SET_VALVE_STATE,#IDENTIFY_REQ,
 #    SWITCH_MESSAGE,
